@@ -24,6 +24,10 @@
 docker compose up -d
 ```
 
+#### Обновление сервера
+```bash
+docker compose pull && docker compose up -d
+```
 
 #### Глянуть логи можно стандартно
 ```bash
