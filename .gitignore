@@ -1,3 +1,5 @@
 config/*
 cache/*
+!config/.gitkeep
+!cache/.gitkeep
 .DS_Store
