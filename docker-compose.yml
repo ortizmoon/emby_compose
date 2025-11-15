@@ -1,4 +1,4 @@
-version: "2.3"
+version: "3.8"
 services:
   emby:
     image: emby/embyserver:latest
@@ -9,22 +9,45 @@ services:
       - UID=1000
       - GID=100
       - GIDLIST=100
+      - TZ=Asia/Barnaul
     volumes:
-      - ./config:/config
+      - ./emby/config:/config
       - /files/serials:/mnt/share1 #tvshows
       - /files/movies:/mnt/share2  #movies
-      - ./cache:/cache
-    # ports:
-    #   - 8096:8096 # HTTP port
-    #   - 8920:8920 # HTTPS port
+      - ./emby/cache:/cache
+    tmpfs:
+      - /tmp:rw,size=1G
     devices:
       - /dev/dri:/dev/dri
-    restart: on-failure
+    restart: unless-stopped
 
   nginx:
     image: nginx:alpine
-    container_name: emby-proxy
+    container_name: proxy
     network_mode: host
+    environment:
+      - TZ=Asia/Barnaul      
     volumes:
-      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
-    restart: on-failure
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    restart: unless-stopped
+    depends_on:
+      - emby
+      - qbittorrent-nox
+
+  qbittorrent-nox:
+    image: qbittorrentofficial/qbittorrent-nox:latest
+    container_name: qbittorrent-nox
+    network_mode: host
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - QBT_WEBUI_PORT=8080
+      - QBT_TORRENTING_PORT=6881
+      - TZ=Asia/Barnaul
+    volumes:
+      - ./qbittorrent/config:/config
+      - /files:/downloads
+    read_only: true
+    tmpfs:
+      - /tmp:rw,size=1G
+    restart: unless-stopped

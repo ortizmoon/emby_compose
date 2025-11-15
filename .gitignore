@@ -1,5 +1,12 @@
-config/*
-cache/*
-!config/.gitkeep
-!cache/.gitkeep
+## emby
+emby/config/*
+emby/cache/*
+!emby/config/.gitkeep
+!emby/cache/.gitkeep
+
+## qbittorrent
+qbittorrent/config/*
+!qbittorrent/config/.gitkeep
+
+## macos
 .DS_Store
